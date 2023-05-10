@@ -13,12 +13,7 @@ class AnnouncementController extends Controller
     public function index()
     {
         return response([
-            'posts' => announcement::orderBy('created_at', 'desc')->with('user:id,name,image')->withCount('comments', 'likes')
-            ->with('likes', function($like){
-                return $like->where('user_id', auth()->user()->id)
-                    ->select('id', 'user_id', 'post_id')->get();
-            })
-            ->get()
+            'announcements' => announcement::withCount('comments', 'likes')->get()
         ], 200);
     }
 

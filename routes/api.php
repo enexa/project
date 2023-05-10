@@ -22,7 +22,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
  
 Route::group(['middleware' => ['auth:sanctum']], function() {
     Route::post('/change-password', [AuthController::class, 'changePassword']);
-    Route::post('pdfs', 'PdfController@store');
+    Route::get('/pdf', [PdfController::class, 'index']);
+
     Route::get('/user', [AuthController::class, 'user']);
     Route::put('/user', [AuthController::class, 'update']);
     Route::post('/logout', [AuthController::class, 'logout']);
