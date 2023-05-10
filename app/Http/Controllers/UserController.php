@@ -26,6 +26,7 @@ class UserController extends Controller
 
     //     return response()->json(['message' => 'Successfully registered as a student.'], 201);
     // }
+    
 
     public function registerTeacher(Request $request)
     {
