@@ -80,8 +80,10 @@ class AuthController extends Controller
         }
 
         $token = $user->createToken('teacher')->accessToken;
-
-        return response()->json(['token' => $token], 200);
+        return response([
+            'user' => auth()->user(),
+            'token' => auth()->user()->createToken('secret')->plainTextToken
+        ], 200);
     }
 
     public function logout()
