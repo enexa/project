@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -14,13 +15,18 @@ use Illuminate\Support\Facades\Route;
 */
 Route::middleware('admin')->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', [\App\Http\Controllers\AdminController::class, 'index'])->name('index');
+    Route::get('/pdfupload', [\App\Http\Controllers\AdminController::class, 'pdfupload'])->name('pdf.upload');
     Route::get('/create-teacher', [\App\Http\Controllers\AdminController::class, 'createTeacher'])->name('create.teacher');
     Route::post('/store-teacher', [\App\Http\Controllers\AdminController::class, 'storeTeacher'])->name('store.teacher');
     Route::get('/list-students', [\App\Http\Controllers\AdminController::class, 'listStudents'])->name('list.students');
     Route::get('/list-teachers', [\App\Http\Controllers\AdminController::class, 'listTeachers'])->name('list.teachers');
-    Route::get('/admin/teachers/edit/{id}', 'TeacherController@edit')->name('admin.edit.teacher');
+    Route::get('/teachers/edit/{id}', 'TeacherController@edit')->name('edit.teacher');
     Route::delete('/delete-student/{student}', [\App\Http\Controllers\AdminController::class, 'destroyStudent'])->name('delete.student');
     Route::delete('/delete-teacher/{teacher}', [\App\Http\Controllers\AdminController::class, 'destroyTeacher'])->name('delete.teacher');
+   
+    Route::post('/pdfadd', [\App\Http\Controllers\AdminController::class, 'pdfadd'])->name('pdf.add');
+
+
 
   
 

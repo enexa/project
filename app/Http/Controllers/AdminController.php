@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Cache;
+use App\Models\Pdf;
+use Illuminate\Support\Facades\Storage;
 
 class AdminController extends Controller
 {
@@ -13,15 +15,14 @@ class AdminController extends Controller
     $this->guard()->logout();
     $request->session()->invalidate();
     $request->session()->regenerateToken();
-    Cache::flush(); // added to clear cache after logout
-
-    // add this line to prevent user from navigating back to home page
+    Cache::flush(); 
+  
     return redirect()->route('login')->with('logout', 'You have been logged out.');
 }
 
     public function dashboard()
     {
-        // Only admin can access the dashboard
+      
         if (auth()->user()->role !== 'admin') {
             abort(403);
         }
@@ -44,6 +45,10 @@ class AdminController extends Controller
     public function createTeacher()
     {
         return view('admin.create-teacher');
+    }
+    public function pdfupload()
+    {
+        return view('admin.pdfupload');
     }
 
     public function storeTeacher(Request $request)
@@ -86,7 +91,32 @@ public function searchStudents(Request $request)
 
     return view('admin.list-students', compact('students'));
 }
+public function pdfadd(Request $request)
 
+{
+    $request->validate([
+        'category' => 'required|string',
+        'year' => 'required|string',
+        'pdf_file' => 'required|mimes:pdf|max:2048',
+    ]);
+
+    $category = $request->category;
+    $year = $request->year;
+    $pdfFile = $request->file('pdf_file');
+    $fileName = $pdfFile->getClientOriginalName();
+
+    $pdf = Pdf::create([
+        'category' => $category,
+        'year' => $year,
+        'name' => $fileName,
+    ]);
+
+    $pdfFile->storeAs("public/$category/$year", $fileName);
+    return   redirect()->route('admin.index')
+    ->with('success','You have successfully upload file.')
+    ->with('file',$fileName);
+   
+}
 
 
 }

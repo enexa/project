@@ -22,18 +22,19 @@ class AnnouncementController extends Controller
         ], 200);
     }
 
-    // get single post
+   
     public function show($id)
     {
         return response([
-            'post' => announcement::where('id', $id)->withCount('comments', 'likes')->get()
+            'announcements' => announcement::where('id', $id)->withCount('comments', 'likes')->get()
         ], 200);
     }
 
-    // create a post
+
+   
     public function store(Request $request)
     {
-        //validate fields
+       
         $attrs = $request->validate([
             'body' => 'required|string'
         ]);
@@ -46,7 +47,7 @@ class AnnouncementController extends Controller
             'image' => $image
         ]);
 
-        // for now skip for post image
+      
 
         return response([
             'message' => 'Post created.',
@@ -54,7 +55,7 @@ class AnnouncementController extends Controller
         ], 200);
     }
 
-    // update a post
+
     public function update(Request $request, $id)
     {
         $post = announcement::find($id);
@@ -73,7 +74,7 @@ class AnnouncementController extends Controller
             ], 403);
         }
 
-        //validate fields
+      
         $attrs = $request->validate([
             'body' => 'required|string'
         ]);
@@ -82,7 +83,7 @@ class AnnouncementController extends Controller
             'body' =>  $attrs['body']
         ]);
 
-        // for now skip for post image
+       
 
         return response([
             'message' => 'Post updated.',
@@ -90,7 +91,7 @@ class AnnouncementController extends Controller
         ], 200);
     }
 
-    //delete post
+  
     public function destroy($id)
     {
         $post = announcement::find($id);

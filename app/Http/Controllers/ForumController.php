@@ -3,115 +3,29 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\ForumConversation;
 use App\Models\Forum;
-use App\Models\User;
-use App\Models\announcement;
-use App\Models\Like;
-
 
 class ForumController extends Controller
 {
-    //
-    public function index($id)
+    public function index()
     {
-        $post = announcement::find($id);
-
-        if(!$post)
-        {
-            return response([
-                'message' => 'Post not found.'
-            ], 403);
-        }
-
-        return response([
-            'comments' => $post->comments()->with('user:id,name,image')->get()
-        ], 200);
+        $forumConversations = Forum::all();
+        return response()->json($forumConversations);
     }
 
-    // create a comment
-    public function store(Request $request, $id)
+    public function store(Request $request)
     {
-        $post = announcement::find($id);
-
-        if(!$post)
-        {
-            return response([
-                'message' => 'Post not found.'
-            ], 403);
-        }
-
-        //validate fields
-        $attrs = $request->validate([
-            'comment' => 'required|string'
+        $this->validate($request, [
+            'title' => 'required',
+            'body' => 'required',
         ]);
 
-        Forum::create([
-            'comment' => $attrs['comment'],
-            'post_id' => $id,
-            'user_id' => auth()->user()->id
+        $forumConversation = Forum::create([
+            'title' => $request->input('title'),
+            'body' => $request->input('body'),
         ]);
 
-        return response([
-            'message' => 'Comment created.'
-        ], 200);
-    }
-
-    // update a comment
-    public function update(Request $request, $id)
-    {
-        $comment = Forum::find($id);
-
-        if(!$comment)
-        {
-            return response([
-                'message' => 'Comment not found.'
-            ], 403);
-        }
-
-        if($comment->user_id != auth()->user()->id)
-        {
-            return response([
-                'message' => 'Permission denied.'
-            ], 403);
-        }
-
-        //validate fields
-        $attrs = $request->validate([
-            'comment' => 'required|string'
-        ]);
-
-        $comment->update([
-            'comment' => $attrs['comment']
-        ]);
-
-        return response([
-            'message' => 'Comment updated.'
-        ], 200);
-    }
-
-    // delete a comment
-    public function destroy($id)
-    {
-        $comment = Forum::find($id);
-
-        if(!$comment)
-        {
-            return response([
-                'message' => 'Comment not found.'
-            ], 403);
-        }
-
-        if($comment->user_id != auth()->user()->id)
-        {
-            return response([
-                'message' => 'Permission denied.'
-            ], 403);
-        }
-
-        $comment->delete();
-
-        return response([
-            'message' => 'Comment deleted.'
-        ], 200);
+        return response()->json($forumConversation, 201);
     }
 }

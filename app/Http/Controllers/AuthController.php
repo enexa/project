@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
@@ -101,6 +102,26 @@ class AuthController extends Controller
             'user' => auth()->user()
         ], 200);
     }
+    public function changePassword(Request $request)
+{
+    $request->validate([
+        'current_password' => 'required',
+        'password' => 'required|confirmed',
+    ]);
+
+    $user = auth()->user();
+
+    if (!Hash::check($request->current_password, $user->password)) {
+        return response()->json(['error' => 'The provided current password does not match your password.'], 422);
+    }
+
+    $user->update([
+        'password' => Hash::make($request->password),
+    ]);
+
+    return response()->json(['success' => 'Your password has been updated.']);
+}
+
 
 
     public function update(Request $request)
@@ -111,11 +132,10 @@ class AuthController extends Controller
 
         $image = $this->saveImage($request->image, 'profiles');
 
-        $user = auth()->user();
-        $user->name = $attrs['name'];
-        $user->image = $image;
-        $user->save();
-        
+        auth()->user()->update([
+            'name' => $attrs['name'],
+            'image' => $image
+        ]);
 
         return response([
             'message' => 'User updated.',

@@ -21,6 +21,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
  
 Route::group(['middleware' => ['auth:sanctum']], function() {
+    Route::post('/change-password', [AuthController::class, 'changePassword']);
+    Route::post('pdfs', 'PdfController@store');
     Route::get('/user', [AuthController::class, 'user']);
     Route::put('/user', [AuthController::class, 'update']);
     Route::post('/logout', [AuthController::class, 'logout']);
@@ -34,5 +36,7 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
     Route::put('/forum/{id}', [ForumController::class, 'update']); 
     Route::delete('/forum/{id}', [ForumController::class, 'destroy']); 
     Route::post('/announcements/{id}/likes', [LikeController::class, 'likeOrUnlike']); 
+    Route::get('/videos', [VideoController::class, 'index']);
+    Route::post('/videos', [VideoController::class, 'store']);
 });
 

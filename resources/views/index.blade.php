@@ -11,7 +11,8 @@
   <div class="btn-group-vertical">
     <a href="{{ route('admin.create.teacher') }}" class="btn btn-primary mb-3">Register Teacher</a>
     <a href="{{ route('admin.list.students') }}" class="btn btn-primary mb-3">List Students</a>
-    <a href="{{ route('admin.list.teachers') }}" class="btn btn-primary">List Teachers</a>
+    <a href="{{ route('admin.list.teachers') }}" class="btn btn-primary  mb-3">List Teachers</a>
+    <a href="{{ route('admin.list.teachers') }}" class="btn btn-primary">Upload PDF</a>
   </div>
 </div>
 

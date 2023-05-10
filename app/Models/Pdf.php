@@ -4,15 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\User;
 
-
-class Forum extends Model
+class Pdf extends Model
 {
     use HasFactory;
-
-    protected $fillable = [
-        'title',
-        'body',
-    ];
+    protected $fillable = ['category', 'year', 'name'];
 }
