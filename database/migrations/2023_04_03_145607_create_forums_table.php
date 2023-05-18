@@ -14,8 +14,7 @@ return new class extends Migration
         Schema::create('forums', function (Blueprint $table) {
             $table->id();
             $table->integer('user_id');
-            $table->integer('post_id');
-            $table->string('ForumName');
+            $table->string('body');
             $table->timestamps();
         });
     }

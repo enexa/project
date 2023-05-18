@@ -13,24 +13,40 @@ class PdfController extends Controller
      */
     public function index()
     {
-        $categories = ['SW', 'IS', 'IT', 'CS'];
-        $years = ['1st', '2nd', '3rd', '4th'];
-        $files = [];
+        $pdfs = Pdf::all();
     
-        foreach ($categories as $category) {
-            foreach ($years as $year) {
-                $pdfFiles = Storage::files("public/$category/$year");
-                $files["$category $year"] = $pdfFiles;
-            }
-        }
-    
-        return response()->json(['files' => $files]);
+        return response()->json($pdfs);
     }
+    
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+//     public function store(Request $request)
+// {
+//     $request->validate([
+//         'category' => 'required|string',
+//         'year' => 'required|string',
+//         'pdf_file' => 'required|mimes:pdf|max:2048',
+//     ]);
+
+//     $category = $request->category;
+//     $year = $request->year;
+//     $pdfFile = $request->file('pdf_file');
+//     $fileName = $pdfFile->getClientOriginalName();
+
+//     $pdf = Pdf::create([
+//         'category' => $category,
+//         'year' => $year,
+//         'name' => $fileName,
+//     ]);
+
+//     $pdfFile->storeAs("public/$category/$year", $fileName);
+
+//     return response()->json(['message' => 'PDF file uploaded successfully.']);
+// }
+public function store(Request $request)
+
 {
     $request->validate([
         'category' => 'required|string',
@@ -50,8 +66,10 @@ class PdfController extends Controller
     ]);
 
     $pdfFile->storeAs("public/$category/$year", $fileName);
-
-    return response()->json(['message' => 'PDF file uploaded successfully.']);
+    return   redirect()->route('admin.index')
+    ->with('success','You have successfully upload file.')
+    ->with('file',$fileName);
+   
 }
     /**
      * Display the specified resource.
@@ -76,4 +94,29 @@ class PdfController extends Controller
     {
         //
     }
+    public function pdfadd(Request $request)
+{
+    $request->validate([
+        'category' => 'required|string',
+        'year' => 'required|string',
+        'pdf_file' => 'required|mimes:pdf|max:2048',
+    ]);
+
+    $category = $request->category;
+    $year = $request->year;
+    $pdfFile = $request->file('pdf_file');
+    $fileName = $pdfFile->getClientOriginalName();
+    $path = $pdfFile->storeAs("public/$category/$year", $fileName);
+
+    $pdf = new Pdf;
+    $pdf->category = $category;
+    $pdf->year = $year;
+    $pdf->name = $fileName;
+    $pdf->path = url('storage/' . $path); // Store the full URL in the 'path' column
+    $pdf->save();
+
+    return redirect()->route('admin.index')
+        ->with('success', 'You have successfully uploaded the file.')
+        ->with('file', $fileName);
+}
 }

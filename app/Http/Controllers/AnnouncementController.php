@@ -10,10 +10,16 @@ use App\Models\User;
 class AnnouncementController extends Controller
 {
     //
+    // get all posts
     public function index()
     {
         return response([
-            'announcements' => announcement::withCount('comments', 'likes')->get()
+            'posts' => announcement::orderBy('created_at', 'desc')->with('user:id,name,image')->withCount('comments', 'likes')
+            ->with('likes', function($like){
+                return $like->where('user_id', auth()->user()->id)
+                    ->select('id', 'user_id', 'post_id')->get();
+            })
+            ->get()
         ], 200);
     }
 

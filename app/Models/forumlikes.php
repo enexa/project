@@ -5,10 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Pdf extends Model
+class forumlikes extends Model
 {
-    protected $table = 'pdfs';
-
-    protected $fillable = ['category', 'year', 'name', 'path'];
-
+    use HasFactory;
+    protected $fillable = [
+        'user_id',
+        'forum_id'
+    ];
 }

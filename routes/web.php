@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\PdfController;
 
 
 /*
@@ -13,6 +14,16 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
+
+Route::get('/storage/{category}/{year}/{filename}',  [PdfController::class, 'index'])->name('pdf.show');
+Route::get('/temp-pdf/{category}/{year}/{filename}', function ($category, $year, $filename) {
+    $filePath = storage_path("app/public/$category/$year/$filename");
+    return response()->file($filePath);
+});
+
+
+
+
 Route::middleware('admin')->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', [\App\Http\Controllers\AdminController::class, 'index'])->name('index');
     Route::get('/pdfupload', [\App\Http\Controllers\AdminController::class, 'pdfupload'])->name('pdf.upload');
@@ -25,7 +36,7 @@ Route::middleware('admin')->prefix('admin')->name('admin.')->group(function () {
     Route::delete('/delete-teacher/{teacher}', [\App\Http\Controllers\AdminController::class, 'destroyTeacher'])->name('delete.teacher');
    
     Route::post('/pdfadd', [\App\Http\Controllers\AdminController::class, 'pdfadd'])->name('pdf.add');
-
+    
 
 
   

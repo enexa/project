@@ -11,13 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('likes', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('announcement_id')->constrained();
-
-            $table->integer('user_id');
-            $table->integer('announcement_id');
-            $table->timestamps();
+        Schema::table('comments', function (Blueprint $table) {
+            //
+            $table->unsignedBigInteger('forum_id')->after('id');
+            $table->foreign('forum_id')->references('id')->on('forums')->onDelete('cascade');
         });
     }
 
@@ -26,6 +23,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('likes');
+        Schema::table('comments', function (Blueprint $table) {
+            //
+        });
     }
 };

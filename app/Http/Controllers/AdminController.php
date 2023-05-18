@@ -92,7 +92,6 @@ public function searchStudents(Request $request)
     return view('admin.list-students', compact('students'));
 }
 public function pdfadd(Request $request)
-
 {
     $request->validate([
         'category' => 'required|string',
@@ -104,19 +103,31 @@ public function pdfadd(Request $request)
     $year = $request->year;
     $pdfFile = $request->file('pdf_file');
     $fileName = $pdfFile->getClientOriginalName();
+    $fileName = str_replace('+', ' ', $fileName); // Replace '+' with space
+   $pdfFile->storeAs("public/$category/$year", $fileName);
 
-    $pdf = Pdf::create([
-        'category' => $category,
-        'year' => $year,
-        'name' => $fileName,
-    ]);
+    $pdf = new Pdf;
+    $pdf->category = $category;
+    $pdf->year = $year;
+    $pdf->name = $fileName;
+    $pdf->path = url("temp-pdf/$category/$year/" . urlencode($fileName)); // Include temp-pdf segment in the URL
+    $pdf->save();
 
-    $pdfFile->storeAs("public/$category/$year", $fileName);
-    return   redirect()->route('admin.index')
-    ->with('success','You have successfully upload file.')
-    ->with('file',$fileName);
-   
+    return redirect()->route('admin.index')
+        ->with('success', 'You have successfully uploaded the file.')
+        ->with('file', $fileName);
 }
+
+
+
+
+
+
+
+
+
+
+
 
 
 }
