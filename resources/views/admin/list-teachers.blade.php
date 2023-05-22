@@ -24,9 +24,13 @@
                                         <td>{{ $teacher->name }}</td>
                                         <td>{{ $teacher->email }}</td>
                                         <td>
-                                            <a href="#" class="btn btn-primary ">Edit</a>
-                                            &nbsp;
-                                            <a href="#" class="btn btn-danger">Delete</a>
+                                            
+                                        <form action="{{ route('admin.delete.teacher', $teacher->id) }}" method="POST">
+
+@csrf
+@method('DELETE')
+<button type="submit" class="btn btn-danger">Delete</button>
+</form>
                                         </td>
                                     </tr>
                                 @endforeach

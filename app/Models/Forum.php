@@ -18,14 +18,16 @@ class Forum extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function forumComments()
-    {
-        return $this->hasMany(forumComments::class);
-    }
+   
 
     public function likes()
     {
-        return $this->hasMany(forumlikes::class);
+        return $this->hasMany(Like::class);
     }
+    public function comments()
+{
+    return $this->hasMany(Comment::class);
+}
+
   
 }

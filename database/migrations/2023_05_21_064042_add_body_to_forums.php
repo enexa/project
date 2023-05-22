@@ -9,20 +9,22 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
+    public function up()
     {
-        Schema::table('comments', function (Blueprint $table) {
-            //
+        Schema::table('forums', function (Blueprint $table) {
+            $table->text('body')->nullable();
         });
     }
 
     /**
      * Reverse the migrations.
+     *
+     * @return void
      */
-    public function down(): void
+    public function down()
     {
-        Schema::table('comments', function (Blueprint $table) {
-            //
+        Schema::table('forums', function (Blueprint $table) {
+            $table->dropColumn('body');
         });
     }
 };

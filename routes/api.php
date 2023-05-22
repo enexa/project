@@ -6,9 +6,11 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AnnouncementController;
 use App\Http\Controllers\ForumController;
+use App\Http\Controllers\CommentController;
 use App\Http\Controllers\LikeController;
 use App\Http\Controllers\PdfController;
 use Illuminate\Support\Facades\Storage;
+
 
 Route::post('/register', [AuthController::class, 'registerStudent']);
 Route::post('/register-teacher', [UserController::class, 'registerTeacher'])->middleware('auth:api');
@@ -25,6 +27,11 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
     Route::post('/change-password', [AuthController::class, 'changePassword']);
     Route::get('/pdf', [PdfController::class, 'index']);
     Route::post('/pdfupload', [PdfController::class, 'store']);
+    Route::get('/storage/{category}/{year}/{filename}',  [PdfController::class, 'index'])->name('pdf.show');
+Route::get('/temp-pdf/{category}/{year}/{filename}', function ($category, $year, $filename) {
+    $filePath = storage_path("app/public/$category/$year/$filename");
+    return response()->file($filePath);
+});
 
     Route::get('/user', [AuthController::class, 'user']);
     Route::put('/user', [AuthController::class, 'update']);
@@ -48,6 +55,14 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
     Route::post('/announcements/{id}/likes', [LikeController::class, 'likeOrUnlike']); 
     Route::get('/videos', [VideoController::class, 'index']);
     Route::post('/videos', [VideoController::class, 'store']);
+    //new
+     Route::get('/forums/{id}/comments', [CommentController::class, 'index']); // all comments of a post
+    Route::post('/forums/{id}/comments', [CommentController::class, 'store']); // create comment on a post
+    Route::put('/comments/{id}', [CommentController::class, 'update']); // update a comment
+    Route::delete('/comments/{id}', [CommentController::class, 'destroy']); // delete a comment
+
+    // Like
+    Route::post('/forums/{id}/likes', [LikeController::class, 'likeOrUnlike']); 
    
 
 Route::get('/pdfs/{category}/{year}', function ($category, $year) {

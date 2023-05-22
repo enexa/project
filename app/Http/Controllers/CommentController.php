@@ -2,17 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\announcement;
 use Illuminate\Http\Request;
 use App\Models\Post;
 use App\Models\Comment;
+use App\Models\Forum;
 
 class CommentController extends Controller
 {
     // get all comments of a post
     public function index($id)
     {
-        $post = announcement::find($id);
+        $post = Forum::find($id);
 
         if(!$post)
         {
@@ -29,7 +29,7 @@ class CommentController extends Controller
     // create a comment
     public function store(Request $request, $id)
     {
-        $post = announcement::find($id);
+        $post = Forum::find($id);
 
         if(!$post)
         {
@@ -45,7 +45,7 @@ class CommentController extends Controller
 
         Comment::create([
             'comment' => $attrs['comment'],
-            'post_id' => $id,
+            'forum_id' => $id,
             'user_id' => auth()->user()->id
         ]);
 

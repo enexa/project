@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\User;
 
 class HomeController extends Controller
 {
@@ -23,7 +24,9 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('index');
+        $students = User::where('role', 'student')->get();
+
+        return view('index', ['students' => $students]);
     }
     public function pdfupload()
 {

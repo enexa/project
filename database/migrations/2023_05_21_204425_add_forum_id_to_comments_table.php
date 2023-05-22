@@ -9,24 +9,29 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up()
+    public function up(): void
     {
-        Schema::create('comments', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('announcement_id')->constrained();
-            $table->string('name');
-            $table->text('comment');
-            $table->timestamps();
+        Schema::table('comments', function (Blueprint $table) {
+            //
+          
+           
+          
+          
+            $table->string('name')->nullable();
+
+          
+          
+           
         });
     }
 
     /**
      * Reverse the migrations.
      */
-    public function down(): void
+    public function down()
     {
         Schema::table('comments', function (Blueprint $table) {
-            //
+            $table->dropColumn([ 'name',  ]);
         });
     }
 };

@@ -9,10 +9,9 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
+    public function up()
     {
-        Schema::table('comments', function (Blueprint $table) {
-            //
+        Schema::table('likes', function (Blueprint $table) {
             $table->unsignedBigInteger('forum_id')->after('id');
             $table->foreign('forum_id')->references('id')->on('forums')->onDelete('cascade');
         });
@@ -20,11 +19,14 @@ return new class extends Migration
 
     /**
      * Reverse the migrations.
+     *
+     * @return void
      */
-    public function down(): void
+    public function down()
     {
-        Schema::table('comments', function (Blueprint $table) {
-            //
+        Schema::table('likes', function (Blueprint $table) {
+            $table->dropForeign(['forum_id']);
+            $table->dropColumn('forum_id');
         });
     }
 };

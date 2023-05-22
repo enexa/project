@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\announcement;
+use App\Models\Forum;
 use Illuminate\Http\Request;
 use App\Models\Like;
 
@@ -11,7 +12,7 @@ class LikeController extends Controller
     //
     public function likeOrUnlike($id)
     {
-        $post = announcement::find($id);
+        $post = Forum::find($id);
 
         if(!$post)
         {
@@ -26,7 +27,7 @@ class LikeController extends Controller
         if(!$like)
         {
             Like::create([
-                'post_id' => $id,
+                'forum_id' => $id,
                 'user_id' => auth()->user()->id
             ]);
 

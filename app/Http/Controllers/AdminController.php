@@ -39,7 +39,9 @@ class AdminController extends Controller
 
     public function index()
     {
-        return view('index');
+        $students = User::where('role', 'student')->get();
+
+        return view('index', ['students' => $students]);
     }
 
     public function createTeacher()
@@ -60,14 +62,17 @@ class AdminController extends Controller
         $user->role = 'teacher';
         $user->save();
 
-        return redirect()->route('admin.index')->with('success', 'Teacher registered successfully.');
+        
+        return redirect()->route('admin.index')
+        ->with('success', 'Teacher registered successfully.');
+        
     }
 
     public function listStudents()
     {
         $students = User::where('role', 'student')->get();
 
-        return view('admin.list-students', compact('students'));
+        return view('index', ['students' => $students]);
     }
     public function listTeachers()
 {
@@ -85,6 +90,17 @@ class AdminController extends Controller
     $student->delete();
     return redirect()->route('admin.list.students');
 }
+public function destroyTeacher(User $teacher)
+{
+    // Only admin can delete students
+    if (auth()->user()->role !== 'admin') {
+        return response()->json(['message' => 'You are not authorized to perform this action.'], 401);
+    }
+
+    $teacher->delete();
+    return redirect()->route('admin.list.teachers');
+}
+
 public function searchStudents(Request $request)
 {
     $students = User::where('role', 'student')->where('name', 'like', '%' . $request->search . '%')->get();
