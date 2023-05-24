@@ -10,6 +10,7 @@ use App\Http\Controllers\CommentController;
 use App\Http\Controllers\LikeController;
 use App\Http\Controllers\PdfController;
 use Illuminate\Support\Facades\Storage;
+use App\Http\Controllers\CourseController;
 
 
 Route::post('/register', [AuthController::class, 'registerStudent']);
@@ -32,7 +33,13 @@ Route::get('/temp-pdf/{category}/{year}/{filename}', function ($category, $year,
     $filePath = storage_path("app/public/$category/$year/$filename");
     return response()->file($filePath);
 });
-
+    Route::get('/courses', [CourseController::class, 'index']);
+    Route::get('/courses/{course}', [CourseController::class, 'show']);
+    Route::post('/courses', [CourseController::class, 'store']);
+    Route::post('/courses/{course}/enroll', [CourseController::class, 'enroll']);
+    Route::get('/teacher/courses', [CourseController::class, 'teacherCourses']);
+    Route::get('/teacher/courses/{course}/students', [CourseController::class, 'courseStudents']);
+//
     Route::get('/user', [AuthController::class, 'user']);
     Route::put('/user', [AuthController::class, 'update']);
     Route::post('/logout', [AuthController::class, 'logout']);
@@ -79,5 +86,9 @@ Route::get('/pdfs/{category}/{year}', function ($category, $year) {
     return response()->json($pdfUrls);
 });
 
+});
+Route::middleware('auth:api', 'teacher')->group(function () {
+    Route::get('/teacher/courses', [CourseController::class, 'teacherCourses']);
+    Route::get('/teacher/courses/{course}/students', [CourseController::class, 'courseStudents']);
 });
 

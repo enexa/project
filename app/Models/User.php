@@ -50,5 +50,10 @@ class User extends Authenticatable
        
         parent::save($options);
     }
+    public function courses()
+{
+    return $this->hasMany(Course::class, 'teacher_id');
+}
+
     
 }

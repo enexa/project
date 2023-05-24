@@ -12,10 +12,12 @@ class CreateCoursesTable extends Migration
             $table->id();
             $table->string('title');
             $table->text('description');
-            $table->string('video_link')->nullable();
+            $table->string('thumbnail');
+            $table->string('video');
             $table->unsignedBigInteger('teacher_id');
-            $table->foreign('teacher_id')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
+
+            $table->foreign('teacher_id')->references('id')->on('users');
         });
     }
 
