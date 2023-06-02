@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use App\Models\Video;
+
 
 
 
@@ -14,10 +16,27 @@ use Illuminate\Support\Str;
 class CourseController extends Controller
 {
     public function index()
-    {
-        $courses = Course::all();
-        return response()->json($courses);
+{
+    $courses = Course::all();
+
+    $courseVideos = [];
+    foreach ($courses as $course) {
+        if (!isset($courseVideos[$course->title])) {
+            $courseVideos[$course->title] = [
+                'id' => $course->id,
+                'title' => $course->title,
+                'description' => $course->description,
+                'thumbnail' => $course->thumbnail,
+                'video' => []
+            ];
+        }
+        $courseVideos[$course->title]['video'][] = $course->video;
     }
+
+    return response()->json(array_values($courseVideos));
+}
+
+    
 
     public function show(Course $course)
     {
@@ -36,7 +55,7 @@ public function store(Request $request)
         'title' => 'required',
         'description' => 'required',
         'thumbnail' => 'required|image',
-        'video' => 'required|mimes:mp4',
+        'video.*' => 'required|mimes:mp4',
     ]);
 
     // Get the authenticated user (teacher)
@@ -103,6 +122,26 @@ public function store(Request $request)
 
         return response()->json(['message' => 'Enrolled successfully']);
     }
+    public function courseVideos($title)
+{
+    $courses = Course::where('title', $title)->get();
+
+    if ($courses->isEmpty()) {
+        return response()->json(['message' => 'Course not found'], 404);
+    }
+
+    $videoUrls = $courses->pluck('video')->toArray();
+
+    return response()->json(['video_urls' => $videoUrls]);
+}
+
+
+    
+
+    
+    
+
+    
 
     public function teacherCourses(Request $request)
     {

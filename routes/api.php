@@ -39,6 +39,8 @@ Route::get('/temp-pdf/{category}/{year}/{filename}', function ($category, $year,
     Route::post('/courses/{course}/enroll', [CourseController::class, 'enroll']);
     Route::get('/teacher/courses', [CourseController::class, 'teacherCourses']);
     Route::get('/teacher/courses/{course}/students', [CourseController::class, 'courseStudents']);
+    Route::get('/courses/{course}/videos', [CourseController::class, 'courseVideos']);
+
 //
     Route::get('/user', [AuthController::class, 'user']);
     Route::put('/user', [AuthController::class, 'update']);
