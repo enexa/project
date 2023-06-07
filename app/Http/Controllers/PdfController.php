@@ -74,9 +74,34 @@ public function store(Request $request)
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function add(Request $request)
     {
         //
+        $request->validate([
+            'category' => 'required|string',
+            'year' => 'required|string',
+            'pdf_file' => 'required|mimes:pdf|max:2048',
+        ]);
+        $category = $request->category;
+    $year = $request->year;
+    $pdfFile = $request->file('pdf_file');
+    $fileName = $pdfFile->getClientOriginalName();
+    $fileName = str_replace('+', ' ', $fileName); // Replace '+' with space
+   $pdfFile->storeAs("public/$category/$year", $fileName);
+
+    $pdf = new Pdf;
+    $pdf->category = $category;
+    $pdf->year = $year;
+    $pdf->name = $fileName;
+    $pdf->path = url("temp-pdf/$category/$year/" . urlencode($fileName)); // Include temp-pdf segment in the URL
+    $pdf->save();
+    return response()->json([
+        'message' => 'success', 'You have successfully uploaded the file.',
+      
+    ]);
+
+   
+       
     }
 
     /**

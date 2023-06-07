@@ -27,7 +27,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::group(['middleware' => ['auth:sanctum']], function() {
     Route::post('/change-password', [AuthController::class, 'changePassword']);
     Route::get('/pdf', [PdfController::class, 'index']);
-    Route::post('/pdfupload', [PdfController::class, 'store']);
+    Route::post('/pdfupload', [PdfController::class, 'add']);
     Route::get('/storage/{category}/{year}/{filename}',  [PdfController::class, 'index'])->name('pdf.show');
 Route::get('/temp-pdf/{category}/{year}/{filename}', function ($category, $year, $filename) {
     $filePath = storage_path("app/public/$category/$year/$filename");

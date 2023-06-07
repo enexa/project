@@ -55,7 +55,7 @@ public function store(Request $request)
         'title' => 'required',
         'description' => 'required',
         'thumbnail' => 'required|image',
-        'video.*' => 'required|mimes:mp4',
+        'video' => 'required|mimes:mp4',
     ]);
 
     // Get the authenticated user (teacher)
