@@ -11,6 +11,7 @@ use App\Http\Controllers\LikeController;
 use App\Http\Controllers\PdfController;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Controllers\CourseController;
+use App\Http\Controllers\ScheduleController;
 
 
 Route::post('/register', [AuthController::class, 'registerStudent']);
@@ -33,10 +34,15 @@ Route::get('/temp-pdf/{category}/{year}/{filename}', function ($category, $year,
     $filePath = storage_path("app/public/$category/$year/$filename");
     return response()->file($filePath);
 });
+Route::get('/schedules', [ScheduleController::class, 'index']);
+Route::post('/schedules', [ScheduleController::class, 'createSchedule']);
+Route::put('/schedules/{id}', [ScheduleController::class, 'updateSchedule']);
+Route::delete('/schedules/{id}', [ScheduleController::class, 'deleteSchedule']);
     Route::get('/courses', [CourseController::class, 'index']);
     Route::get('/courses/{course}', [CourseController::class, 'show']);
     Route::post('/courses', [CourseController::class, 'store']);
-    Route::post('/courses/{course}/enroll', [CourseController::class, 'enroll']);
+    Route::post('/courses/{title}/enroll', [CourseController::class, 'enroll']);
+   
     Route::get('/teacher/courses', [CourseController::class, 'teacherCourses']);
     Route::get('/teacher/courses/{course}/students', [CourseController::class, 'courseStudents']);
     Route::get('/courses/{course}/videos', [CourseController::class, 'courseVideos']);
@@ -92,5 +98,8 @@ Route::get('/pdfs/{category}/{year}', function ($category, $year) {
 Route::middleware('auth:api', 'teacher')->group(function () {
     Route::get('/teacher/courses', [CourseController::class, 'teacherCourses']);
     Route::get('/teacher/courses/{course}/students', [CourseController::class, 'courseStudents']);
+    Route::get('/courses/{title}/enrolled-students', [CourseController::class, 'enrolledStudents']);
 });
+
+
 

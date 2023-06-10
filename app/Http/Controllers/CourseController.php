@@ -7,7 +7,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
-use App\Models\Video;
+use App\Models\User;
+
 
 
 
@@ -50,7 +51,6 @@ class CourseController extends Controller
 
 public function store(Request $request)
 {
-    // Validate the request data
     $validatedData = $request->validate([
         'title' => 'required',
         'description' => 'required',
@@ -58,31 +58,29 @@ public function store(Request $request)
         'video' => 'required|mimes:mp4',
     ]);
 
-    // Get the authenticated user (teacher)
+    
     $teacher = Auth::user();
 
-    // Create a folder for the course using the course title
+   
     $courseFolder = Str::slug($validatedData['title']);
     $coursePath = public_path('storage/courses/' . $courseFolder);
 
-    // Create the course folder if it doesn't exist
+   
     if (!file_exists($coursePath)) {
         mkdir($coursePath, 0777, true);
     }
 
-    // Store the thumbnail image in the course folder with the original file name
     $thumbnail = $request->file('thumbnail');
     $thumbnailName = $thumbnail->getClientOriginalName();
     $thumbnailPath = $thumbnail->move($coursePath . '/thumbnails', $thumbnailName);
 
-    // Store the video in the course folder with the original file name
     $video = $request->file('video');
     $videoName = $video->getClientOriginalName();
     $videoPath = $video->move($coursePath . '/videos', $videoName);
-    // Generate the URLs for thumbnail and video
+    
     $thumbnailUrl = asset('storage/courses/' . $courseFolder . '/thumbnails/' . $thumbnailName);
     $videoUrl = asset('storage/courses/' . $courseFolder . '/videos/' . $videoName);
-    // Create the course
+   
     
     $course = Course::create([
         'title' => $validatedData['title'],
@@ -94,34 +92,95 @@ public function store(Request $request)
 
 
 
-    // Update the course object with the file URLs
+    
     $course->thumbnail = $thumbnailUrl;
     $course->video = $videoUrl;
 
-    // Return a response with the created course
+    
     return response()->json([
         'message' => 'Course created successfully',
         'course' => $course,
     ]);
 }
 
-    
-    
-    
-    
+public function enroll(Request $request, $title)
+{
+    // Validate the request data
+    $validatedData = $request->validate([
+        'title' => 'required',
+    ]);
 
-    
+    // Get the authenticated user
+    $user = Auth::user();
 
-
-    public function enroll(Course $course, Request $request)
-    {
-        // Perform enrollment logic here
-        // Example: Add student to course's students list
-        $user = $request->user();
-        $course->students()->attach($user->id);
-
-        return response()->json(['message' => 'Enrolled successfully']);
+    // Check if the user is a student
+    if ($user->role !== 'student') {
+        return response()->json(['message' => 'Only students can enroll in courses'], 403);
     }
+
+    // Find all courses with the given title
+    $courses = Course::where('title', $validatedData['title'])->get();
+
+    // Check if any courses with the given title exist
+    if ($courses->isEmpty()) {
+        return response()->json(['message' => 'No courses found with the given title'], 404);
+    }
+
+    // Enroll the student in each course
+    foreach ($courses as $course) {
+        // Retrieve the enrolled students as an array
+        $enrolledStudents = $course->students ?? [];
+
+        // Check if the student is already enrolled in the course
+        if (in_array($user->id, $enrolledStudents)) {
+            continue; // Skip this course and move to the next one
+        }
+
+        // Add the student ID to the course's enrolled students
+        $enrolledStudents[] = $user->id;
+        $course->students = $enrolledStudents;
+        $course->save();
+    }
+
+    // Return a response indicating successful enrollment
+    return response()->json(['message' => 'Enrollment successful']);
+}
+
+public function enrolledStudents($title)
+{
+    // Get the authenticated user
+    $user = Auth::user();
+
+    // Check if the user is a teacher
+    if ($user->role !== 'teacher') {
+        return response()->json(['message' => 'Only teachers can access enrolled students'], 403);
+    }
+
+    // Find the courses with the given title
+    $courses = Course::where('title', $title)->get();
+
+    // Check if any courses with the given title exist
+    if ($courses->isEmpty()) {
+        return response()->json(['message' => 'No courses found with the given title'], 404);
+    }
+
+    // Retrieve the enrolled student IDs from all courses
+    $enrolledStudents = $courses->pluck('enrolled_students')->flatten()->unique();
+
+    // Retrieve the details of the enrolled students
+    $students = User::whereIn('id', $enrolledStudents)->get();
+
+    // Return a response with the enrolled students
+    return response()->json(['students' => $students]);
+}
+    
+    
+    
+
+    
+
+
+   
     public function courseVideos($title)
 {
     $courses = Course::where('title', $title)->get();
