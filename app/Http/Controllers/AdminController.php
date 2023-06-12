@@ -112,7 +112,7 @@ public function pdfadd(Request $request)
     $request->validate([
         'category' => 'required|string',
         'year' => 'required|string',
-        'pdf_file' => 'required|mimes:pdf|max:2048',
+        'pdf_file' => 'required|mimes:pdf|max:10000',
     ]);
 
     $category = $request->category;

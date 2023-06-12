@@ -19,7 +19,7 @@
                                     <a href="{{ route('admin.create.teacher') }}" class="btn btn-primary mb-3">Register Teacher</a>
                                     <a href="{{ route('admin.list.teachers') }}" class="btn btn-primary mb-3">List Teachers</a>
                                     <a href="{{ route('admin.pdf.upload') }}" class="btn btn-primary mb-3">Upload PDF</a>
-                                    <a href="{{ route('admin.pdf.upload') }}" class="btn btn-primary">Customer Service</a>
+                                    
                                 </div>
                             </div>
                             <div class="col-md-8">

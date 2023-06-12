@@ -46,6 +46,7 @@ Route::delete('/schedules/{id}', [ScheduleController::class, 'deleteSchedule']);
     Route::get('/teacher/courses', [CourseController::class, 'teacherCourses']);
     Route::get('/teacher/courses/{course}/students', [CourseController::class, 'courseStudents']);
     Route::get('/courses/{course}/videos', [CourseController::class, 'courseVideos']);
+  
 
 //
     Route::get('/user', [AuthController::class, 'user']);
@@ -97,8 +98,9 @@ Route::get('/pdfs/{category}/{year}', function ($category, $year) {
 });
 Route::middleware('auth:api', 'teacher')->group(function () {
     Route::get('/teacher/courses', [CourseController::class, 'teacherCourses']);
-    Route::get('/teacher/courses/{course}/students', [CourseController::class, 'courseStudents']);
-    Route::get('/courses/{title}/enrolled-students', [CourseController::class, 'enrolledStudents']);
+    // Route::get('/teacher/courses/{course}/students', [CourseController::class, 'courseStudents']);
+    // Route::get('/courses/{title}/enrolled-students', [CourseController::class, 'enrolledStudents']);
+       Route::get('/courses/{title}/enrolled-students', [CourseController::class, 'enrolledStudents']);
 });
 
 

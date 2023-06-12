@@ -18,9 +18,10 @@ class Course extends Model
         return $this->belongsTo(User::class, 'teacher_id');
     }
     public function enrolledStudents()
-    {
-        return User::whereIn('id', $this->students)->get();
-    }
+{
+    return User::whereIn('id', $this->students)->get(['name', 'image']);
+}
+
     public function videos()
     {
         return $this->hasMany(Video::class);

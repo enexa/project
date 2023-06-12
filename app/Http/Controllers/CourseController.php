@@ -167,12 +167,13 @@ public function enrolledStudents($title)
     // Retrieve the enrolled student IDs from all courses
     $enrolledStudents = $courses->pluck('enrolled_students')->flatten()->unique();
 
-    // Retrieve the details of the enrolled students
-    $students = User::whereIn('id', $enrolledStudents)->get();
+    // Retrieve the details (name and image) of the enrolled students
+    $students = User::whereIn('id', $enrolledStudents)->get(['name', 'image']);
 
     // Return a response with the enrolled students
     return response()->json(['students' => $students]);
 }
+
     
     
     
